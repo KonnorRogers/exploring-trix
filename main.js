@@ -1,23 +1,26 @@
-import './style.css'
-import Trix from 'trix'
-import 'trix/dist/trix.css'
+import './style.css';
+import Trix from 'trix';
+import 'trix/dist/trix.css';
 
-window.Trix = Trix // Don't need to bind to the window, but useful for debugging.
-Trix.config.toolbar.getDefaultHTML = toolbarDefaultHTML
+window.Trix = Trix; // Don't need to bind to the window, but useful for debugging.
+Trix.config.toolbar.getDefaultHTML = toolbarDefaultHTML;
 
 // trix-before-initialize runs too early.
-document.addEventListener("trix-initialize", updateToolbars)
+// We only need to do this once. Everything after initialize will get the
+// defaultHTML() call automatically.
+document.addEventListener('trix-initialize', updateToolbars, { once: true });
 
-function updateToolbars () {
-  const toolbars = document.querySelectorAll('trix-toolbar')
-  toolbars.forEach((toolbar) => toolbar.innerHTML = Trix.config.toolbar.getDefaultHTML())
+function updateToolbars(event) {
+  const toolbars = document.querySelectorAll('trix-toolbar');
+  const html = Trix.config.toolbar.getDefaultHTML();
+  toolbars.forEach((toolbar) => (toolbar.innerHTML = html));
 }
 
 /**
  * This is the default Trix toolbar. Feel free to change / manipulate it how you would like.
  * @see https://github.com/basecamp/trix/blob/main/src/trix/config/toolbar.coffee
  */
-function toolbarDefaultHTML () {
+function toolbarDefaultHTML() {
   const lang = Trix.config.lang;
   return `
   <div class="trix-button-row">
@@ -58,4 +61,3 @@ function toolbarDefaultHTML () {
   </div>
 `;
 }
-
